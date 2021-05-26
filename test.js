@@ -9,7 +9,7 @@ const fetch = require('node-fetch')
     u: 'from Node',
   }
 };*/
-const body = {
+/*const body = {
   id: '1',
   name: 'Test Testovicn Second',
   phone: '+71231231212',
@@ -19,7 +19,10 @@ const body = {
     g: 'to World',
     u: 'from Node',
   }
-};
+};*/
+const body = {
+  phone: '+79252023828',
+}
 
 /*fetch('https://httpbin.org/post', {
         method: 'post',
@@ -28,7 +31,7 @@ const body = {
     })
     .then(res => res.json())
     .then(json => console.log(json));*/
-fetch('http://localhost:5000/change-courier-info', {
+fetch('http://localhost:3000/phone-code', {
         method: 'post',
         body:    JSON.stringify(body),
         headers: { 'Content-Type': 'application/json' },

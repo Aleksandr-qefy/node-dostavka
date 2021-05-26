@@ -12,7 +12,7 @@ const schemaNewCourier = {
 };
 module.schemaNewCourier = schemaNewCourier
 
-const schemaEditCourier = {
+/*const schemaEditCourier = {
   "id": "/NewCourier",
   "type": "object",
   "properties": {
@@ -31,9 +31,20 @@ const schemaEditCourier = {
   //"maxProperties": 3,
   "required": ["id"]//обязательно должен быть id
 };
-module.schemaEditCourier = schemaEditCourier
+module.schemaEditCourier = schemaEditCourier*/
 
 const jsonKeysEditCourier = [
     'id', 'phone', 'name', 'document', 'level', 'status', 'statusChangeTime', 'image', 'settings', 'extrainfo'
 ];
 module.jsonKeysEditCourier = jsonKeysEditCourier
+
+const schemaPhoneCode = {
+  "id": "/PhoneCode",
+  "type": "object",
+  "properties": {
+    "phone": {"type": "string"},
+  },
+  "maxProperties": 1,
+  "required": ["phone"]//обязательно должен быть id
+};
+module.schemaPhoneCode = schemaPhoneCode
