@@ -4,8 +4,8 @@ const AdminBroExpress = require('@admin-bro/express')
 const AdminBroSequelize = require('@admin-bro/sequelize')
 AdminRouter.registerAdapter(AdminBroSequelize)
 
-const db = require("./models");
-const { Person, Courier } = require("./models");
+const db = require("../models");
+const { Person, Courier } = require("../models");
 
 const adminBro = new AdminRouter({
   databases: [db],
