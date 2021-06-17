@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const fetch = require('node-fetch')
+const fetch = require('node-fetch');
 
 //const phonePostCode = require("./phonePostCode");
 const validateSchema = require("../middleware/validateSchema");

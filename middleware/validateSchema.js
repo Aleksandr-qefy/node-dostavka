@@ -25,7 +25,9 @@ const validateSchema = (approvedJsonKeys, importantJsonKeys) => {
     let importantJsonKeysDifference = [];
     if(importantJsonKeys) importantJsonKeysDifference = importantJsonKeys.filter(num => !Object.keys(req.body).includes(num));
 
-    if (importantJsonKeysDifference.length === 0 && approvedJsonKeysDifference.length === 0) {
+    if (importantJsonKeysDifference.length === 0
+        && approvedJsonKeysDifference.length === 0
+        && JSON.stringify(req.body) === '{}') {
       next()
     } else {
       //return res.send(errorResponse(ajv.errors))

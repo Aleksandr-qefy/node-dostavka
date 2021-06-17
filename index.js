@@ -6,10 +6,12 @@ const db = require("./models");
 let bodyParser = require('body-parser')
 app.use(bodyParser.json({ limit: '150kb'}));
 
+app.use()
+
 //const validateSchema = require("./middleware/validateSchema");
 
 
-app.use('/admin', require('./routes/admin.routes'));
+app.use('/', require('./routes/admin.routes'));
 app.use('/courier', require('./routes/courier.routes'));
 app.use('/', require('./routes/smsru.routes'));
 
@@ -31,7 +33,10 @@ const PORT = process.env.PORT || 3000;
 db.sequelize.sync().then(async (req) => {
 
   app.listen(PORT, () => {
-    console.log(
-        `Server is running localhost:${PORT} \nLogin AdminPanel is under localhost:${PORT}/admin`)
+    /*console.log(
+        `Server is running localhost:${PORT} \nLogin AdminPanel is under localhost:${PORT}/admin`)*/
+    console.log(`Server is running localhost:${PORT}`);
+    console.log(`Login AdminPanel is under localhost:${PORT}/admin/dashboard localhost:${PORT}/localhost:3000/admin/info`);
+    console.log(`Log Out AdminPanel is under localhost:${PORT}/admin/logout`);
   });
 })
