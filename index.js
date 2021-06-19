@@ -6,10 +6,14 @@ const db = require("./models");
 let bodyParser = require('body-parser')
 app.use(bodyParser.json({ limit: '150kb'}));
 
-app.use()
-
 //const validateSchema = require("./middleware/validateSchema");
 
+const passport = require('passport')
+const jwt = require('jsonwebtoken')
+app.use( passport.initialize() )
+app.use( passport.session() )
+
+require("./passport/passport")(passport);
 
 app.use('/', require('./routes/admin.routes'));
 app.use('/courier', require('./routes/courier.routes'));

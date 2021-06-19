@@ -8,7 +8,7 @@ const auth0check = require('./../middleware/auth0check');
 //app.use(express.static(path.join(__dirname, '../adminPanel/build')));
 router.use( auth(auth0config) );
 // req.isAuthenticated is provided from the auth router
-router.get('/admin/dashboard',requiresAuth(), (req, res) => {
+router.get('/admin/dashboard', requiresAuth(), (req, res) => {
   res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out')
   //res.send(JSON.stringify(req.oidc.user));
   //res.sendFile(path.join(__dirname, '../my-app/build/index.html'));
