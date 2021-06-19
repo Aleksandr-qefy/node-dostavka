@@ -6,6 +6,7 @@ const auth0config = require('./../config/auth0.config');
 router.use( auth(auth0config) );
 
 const validateSchema = require("../middleware/validateSchema");
+const Courier = require("../controllers/courier.controller");
 
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
@@ -138,7 +139,7 @@ router.post('/update-courier',
 });
 
 
-const Courier = require("../controllers/courier.controller");router.post('/find-id', requiresAuth(), validateSchema(  ['name', 'document', 'phone']),
+router.post('/find-id', requiresAuth(), validateSchema(  ['name', 'document', 'phone']),
     async (req, res) => {
   await Courier.findCourierIdByInfo(req.body, (err, id) => {
     if (err)
