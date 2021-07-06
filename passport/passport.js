@@ -2,13 +2,14 @@
 //const config = require(__dirname + '/../config/config.json')[env];
 const User = require("../models/User");
 const Courier = require("../models/User");
+const jwtConfig = require("../config/jwt.config");
 
 module.exports = function (passport) {
   const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
   const opts = {}
   opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-  opts.secretOrKey = 'secret';
+  opts.secretOrKey = jwtConfig.secret;
   //opts.issuer = 'accounts.examplesoft.com';
   //opts.audience = 'yoursite.net';
   passport.use('user-jwt', new JwtStrategy(opts, async function(jwt_payload, done) {

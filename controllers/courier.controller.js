@@ -1,4 +1,5 @@
-const { Courier } = require("../models")
+const { Courier } = require("../models");
+const bcrypt = require('bcrypt');
 
 module.exports.changeCourierInfo = async function (courier, changesObject, callback) {
   //Object.assign(courier, changesObject)
@@ -41,11 +42,17 @@ module.exports.getCourierById = async function (id, callback) {
   }
 }
 
-module.exports.comparePass = function (passFromUser, userDBPass, callback) {
-  if(passFromUser === userDBPass) {
-    callback(null, true)
-  } else
-    callback(null, false)
+module.exports.comparePass = async function (passFromUser, userDBPassHash, callback) {
+  try {
+    const validPass = await bcrypt.compare(passFromUser, userDBPassHash);
+    if(validPass) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  } catch (err) {
+    callback(err, null);
+  }
 }
 
 module.exports.findCourierIdByInfo = async function (infoObj, callback) {

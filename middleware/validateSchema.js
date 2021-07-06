@@ -19,15 +19,17 @@
 }*/
 const validateSchema = (approvedJsonKeys, importantJsonKeys) => {
   return (req, res, next) => {
+    console.log(req.body);
     let approvedJsonKeysDifference = [];
     if(approvedJsonKeys) approvedJsonKeysDifference = Object.keys(req.body).filter(num => !approvedJsonKeys.includes(num));
 
     let importantJsonKeysDifference = [];
     if(importantJsonKeys) importantJsonKeysDifference = importantJsonKeys.filter(num => !Object.keys(req.body).includes(num));
 
+    console.log(importantJsonKeysDifference.length, approvedJsonKeysDifference.length);
     if (importantJsonKeysDifference.length === 0
         && approvedJsonKeysDifference.length === 0
-        && JSON.stringify(req.body) === '{}') {
+        && JSON.stringify(req.body) !== '{}') {
       next()
     } else {
       //return res.send(errorResponse(ajv.errors))

@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes,) => {
   const Courier = sequelize.define("Courier", {
     id: {
@@ -36,6 +37,10 @@ module.exports = (sequelize, DataTypes,) => {
       unique: true,
       validate: {
         notEmpty: true,
+      },
+      async set(value) {
+        const hash = await bcrypt.hash(value, 10);
+        this.setDataValue('document', hash);
       }
     },
     phone: {

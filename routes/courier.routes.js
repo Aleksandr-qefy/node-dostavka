@@ -10,6 +10,7 @@ const Courier = require("../controllers/courier.controller");
 
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const jwtConfig = require("../config/jwt.config");
 
 router.get('/info',
   passport.authenticate('jwt', {session: false}),
@@ -79,7 +80,7 @@ router.post('/login',
       if(err) throw err
       if(isMatch) {
         //console.log(user.toJSON());
-        const token = jwt.sign(courier.toJSON(), 'secret', {
+        const token = jwt.sign(courier.toJSON(), jwtConfig.secret, {
           expiresIn: 3600 * 24
         });
 
