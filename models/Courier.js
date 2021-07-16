@@ -1,5 +1,6 @@
-const crypto = require('crypto');
-const bcrypt = require('bcrypt');
+//const crypto = require('crypto');
+//const resizedIV = Buffer.allocUnsafe(16)
+//const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes,) => {
   const Courier = sequelize.define("Courier", {
     id: {
@@ -8,13 +9,20 @@ module.exports = (sequelize, DataTypes,) => {
         allowNull: false,
         defaultValue: DataTypes.UUIDV4,
     },
+    surname: {
+      type: DataTypes.STRING(256),
+      allowNull: true,
+      validate: {
+        notEmpty: false,
+      },
+    },
     name: {
       type: DataTypes.STRING(256),
       allowNull: true,
       validate: {
         notEmpty: false,
       },
-      get() {
+      /*get() {
         const rawValue = this.getDataValue('name');
         let mykey = crypto.createDecipher('aes256', 'mypassword');
         let mystr = mykey.update(rawValue, 'hex', 'utf8')
@@ -25,11 +33,18 @@ module.exports = (sequelize, DataTypes,) => {
         // Storing passwords in plaintext in the database is terrible.
         // Hashing the value with an appropriate cryptographic hash function is better.
         // Using the username as a salt is better.
-        let mykey = crypto.createCipher('aes256', 'mypassword');
+        let mykey = crypto.createCipheriv('aes-256-ccm', 'mypassword', resizedIV);
         let mystr = mykey.update(value, 'utf8', 'hex')
         mystr += mykey.final('hex');
         this.setDataValue('name', mystr );
-      }
+      }*/
+    },
+    patronymic: {
+      type: DataTypes.STRING(256),
+      allowNull: true,
+      validate: {
+        notEmpty: false,
+      },
     },
     document: {
       type: DataTypes.STRING,
@@ -38,10 +53,14 @@ module.exports = (sequelize, DataTypes,) => {
       validate: {
         notEmpty: true,
       },
-      async set(value) {
-        const hash = await bcrypt.hash(value, 10);
-        this.setDataValue('document', hash);
-      }
+
+      /*async set(value) {
+        try {
+          const hash = await bcrypt.hash(value, 10);
+          this.setDataValue('document', hash);
+        } catch (err)
+        { throw err }
+      }*/
     },
     phone: {
       type: DataTypes.STRING(64),

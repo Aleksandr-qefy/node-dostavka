@@ -13,7 +13,7 @@ app.use(bodyParser.json({ limit: '150kb'}));
 
 const cors = require('cors');
 app.use(cors({
-  origin: 'http://localhost:8100',
+  origin: ['http://localhost:8100','http://192.168.0.107:8100','http://192.168.0.103:8100'],
   methods: ['GET', 'POST'],
 }));
 

@@ -10,6 +10,7 @@ async function getInn(
     docnumber,
     docdate
 ) {
+    //const url = "https://service.nalog.ru/inn-proc.do";
     const url = "https://service.nalog.ru/inn-proc.do";
     const data = {
         fam: surname,
@@ -37,11 +38,16 @@ async function getInn(
     /*const resp = fetch(secretOceanHerrokuapp + url +'?'+ encoded, {
         method: "GET"
     });*/
+    console.log(corsProxyServer + url +'?'+ encoded);
      const result = await fetch(corsProxyServer + url +'?'+ encoded, {
             method: 'get',
+         headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
             //body:    JSON.stringify(body),
             //headers: { 'Content-Type': 'application/json' },
         });
+     console.log(result);
      const json =  result.json();
     //const resp = axios.get(falseBottomHerrokuapp + url +'?'+ encoded)
     //return resp;

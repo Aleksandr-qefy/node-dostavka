@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const { auth, requiresAuth } = require('express-openid-connect');
+const bcrypt = require('bcrypt');
+
+/*const { auth, requiresAuth } = require('express-openid-connect');
 const auth0config = require('./../config/auth0.config');
-router.use( auth(auth0config) );
+router.use( auth(auth0config) );*/
 
 const validateSchema = require("../middleware/validateSchema");
 const Courier = require("../controllers/courier.controller");
@@ -19,33 +21,39 @@ router.get('/info',
   });
 
 router.post('/create-new', validateSchema(
-    ['phone', 'name', 'document', 'level', 'status', 'statusChangeTime', 'image', 'settings', 'extrainfo'],
-    ["name", "phone", "document"] ),
+    ['phone', 'name', 'surname', 'patronymic', 'document', 'level', 'status', 'statusChangeTime', 'image', 'settings', 'extrainfo'],
+    ["name", 'surname', "phone", "document" ] ),
     async (req, res) => {
-  console.log(req.body);
-  await Courier.addCourier(req.body, (err, status) => {
-    if(typeof err.errors == 'undefined')
-      res.status(404).json({
-        error: "unhandled error",
-        message: "unhandled error"
-      });
-    else if (err.errors[0].type !== 'unique violation')
-      res.json({
-        error: 'invalid unique violation',
-        message: 'invalid unique violation'
-      });
-    else if (err) {
-      res.status(404).json({
-        error: "unhandled error",
-        message: err.errors
-      });
-      throw err.errors;
-    }
-    else
+  let body = req.body;
+
+  body.document = await bcrypt.hash(body.document, 10);
+
+  await Courier.addCourier(body, (err, status) => {
+    if (status) {
       res.json({
         status: "success",
         message: "courier was added successfully"
-      });
+      }); }
+    if (err) {
+      console.log(err)
+      if(typeof err.errors === 'undefined') {
+        console.log(err);
+        res.status(404).json({
+          error: "unhandled error",
+          message: "unhandled error"
+        });
+      }
+      else if (err.errors[0].type === 'unique violation')
+        res.json({
+          error: 'invalid unique violation',
+          message: 'invalid unique violation'
+        });
+      else
+        res.json({
+          error: "unhandled error",
+          message: err.errors
+        });
+    }
   })
   /*try {
     //await Courier.create(req.body,{fields: ['name', 'phone', 'document']})
@@ -73,8 +81,8 @@ router.post('/login',
     if(err) throw err
     if(!courier)
       return res.json({
-        error: "Такой пользователь не был найден",
-        message: "Такой пользователь не был найден"
+        error: "incorrect data",
+        message: "no courier with this data"
       });
     await Courier.comparePass(document, courier.document, (err, isMatch) => {
       if(err) throw err
@@ -85,16 +93,17 @@ router.post('/login',
         });
 
         res.json({
-              token: 'JWT ' + token,
-              courier: {
-                phone: courier.phone,
-                name: courier.name,
-              }
-            })
+          status: 'success',
+          token: 'JWT ' + token,
+          courier: {
+            phone: courier.phone,
+            name: courier.name,
+          }
+        })
       } else
         res.json({
-          error: "Неправильный номер и снрия документа",
-          message: "Неправильный номер и снрия документа"
+          error: "incorrect data",
+          message: "incorrect courier document"
         });
     })
   })
@@ -140,7 +149,7 @@ router.post('/update-courier',
 });
 
 
-router.post('/find-id', requiresAuth(), validateSchema(  ['name', 'document', 'phone']),
+router.post('/find-id', /*requiresAuth(),*/ validateSchema(  ['name', 'document', 'phone']),
     async (req, res) => {
   await Courier.findCourierIdByInfo(req.body, (err, id) => {
     if (err)
@@ -156,7 +165,7 @@ router.post('/find-id', requiresAuth(), validateSchema(  ['name', 'document', 'p
   })
 });
 
-router.post('/edit-by-admin', requiresAuth(),
+router.post('/edit-by-admin', /*requiresAuth(),*/
     validateSchema(['id', 'phone', 'name', 'level', 'status', 'statusChangeTime', 'image', 'settings', 'extrainfo'],
         ['id']),
     async (req, res) => {
