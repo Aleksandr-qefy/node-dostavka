@@ -10,12 +10,19 @@ router.use( auth(auth0config) );*/
 const validateSchema = require("../middleware/validateSchema");
 const Courier = require("../controllers/courier.controller");
 
+////const { loginLimiter } = require("../middleware/rateLimitRedis");
+
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
-const jwtConfig = require("../config/jwt.config");
+////const jwt = require('jsonwebtoken');
+////const jwtConfig = require("../config/jwt.config");
+
+//////const authJwt = require('../middleware/authJwt');
+
+const controller = require("../controllers/jwt.controller");
+router.post("/refresh-token", controller.refreshToken);
 
 router.get('/info',
-  passport.authenticate('jwt', {session: false}),
+  //passport.authenticate('jwt', {session: false}),
   function(req, res) {
     res.json({ id: req.user.id, username: req.user.username });
   });
@@ -73,6 +80,11 @@ router.post('/create-new', validateSchema(
 router.post('/login',
     validateSchema(['document', 'phone'],
         ['document', 'phone']),
+    controller.signin);
+/*router.post('/login',
+    validateSchema(['document', 'phone'],
+        ['document', 'phone']),
+    loginLimiter,
     async (req, res) => {
   const phone = req.body.phone;
   const document = req.body.document;
@@ -88,13 +100,16 @@ router.post('/login',
       if(err) throw err
       if(isMatch) {
         //console.log(user.toJSON());
-        const token = jwt.sign(courier.toJSON(), jwtConfig.secret, {
+        const accessToken = jwt.sign(courier.toJSON(), jwtConfig.ACCESS_TOKEN_SECRET, {
+          expiresIn: 3600 * 24
+        });
+        const refreshToken = jwt.sign(courier.toJSON(), jwtConfig.REFRESH_TOKEN_SECRET, {
           expiresIn: 3600 * 24
         });
 
         res.json({
           status: 'success',
-          token: 'JWT ' + token,
+          token: token,//'JWT ' + token,
           courier: {
             phone: courier.phone,
             name: courier.name,
@@ -107,12 +122,12 @@ router.post('/login',
         });
     })
   })
-});
+});*/
 
 router.post('/update-courier',
     validateSchema(["phone", 'level', 'status', 'statusChangeTime', 'image', 'settings', 'extrainfo'],
         ["phone"]),
-    passport.authenticate('jwt', {session: false}),
+    //passport.authenticate('jwt', {session: false}),
     async (req, res) => {
   console.log(req.body);
   //await Courier.getCourierByPhone(req.body.phone, (err, courier) => {

@@ -34,4 +34,16 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+db.courier = require("../models/Courier")(sequelize, Sequelize);
+db.refreshToken = require("../models/RefreshToken")(sequelize, Sequelize);
+
+db.refreshToken.belongsTo(db.courier, {
+  foreignKey: 'userId', targetKey: 'id'
+});
+db.courier.hasOne(db.refreshToken, {
+  foreignKey: 'userId', targetKey: 'id'
+});
+
+//db.ROLES = ["user", "admin", "moderator"];
+
 module.exports = db;

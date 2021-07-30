@@ -20,6 +20,7 @@
 const validateSchema = (approvedJsonKeys, importantJsonKeys) => {
   return (req, res, next) => {
     console.log(req.body);
+    //console.log(req);
     let approvedJsonKeysDifference = [];
     if(approvedJsonKeys) approvedJsonKeysDifference = Object.keys(req.body).filter(num => !approvedJsonKeys.includes(num));
 

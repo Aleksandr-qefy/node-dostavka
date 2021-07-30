@@ -5,25 +5,28 @@ const db = require("./models");
 
 app.set('trust proxy', 1);
 
-const limiter = require("./middleware/rateLimitRedis");
-app.use("/courier/", limiter);
 
 let bodyParser = require('body-parser')
 app.use(bodyParser.json({ limit: '150kb'}));
 
 const cors = require('cors');
 app.use(cors({
-  origin: ['http://localhost:8100','http://192.168.0.107:8100','http://192.168.0.103:8100'],
+  origin: ['http://192.168.0.104:8100','http://localhost:8100', 'http://localhost:8101', 'http://192.168.0.103:8101', 'http://192.168.0.107:8100','http://192.168.0.103:8100'],
   methods: ['GET', 'POST'],
+  //'Access-Control-Allow-Origin: *'
 }));
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
 
 //const validateSchema = require("./middleware/validateSchema");
 
-const passport = require('passport')
-app.use( passport.initialize() )
-app.use( passport.session() )
+//const passport = require('passport')
+//app.use( passport.initialize() )
+//app.use( passport.session() )
 
-require("./passport/passport")(passport);
+//require("./passport/passport")(passport);
 
 /*const redis = require("redis");
 const redisClient = redis.createClient({
@@ -74,8 +77,14 @@ redisClient.del("key", (err, response) => {
 
 app.use('/', require('./routes/admin.routes'));
 app.use('/courier', require('./routes/courier.routes'));
-app.use('/', require('./routes/smsru.routes'));
-app.use('/service-nalog-ru', require('./routes/service.nalog.ru.routes'));
+//app.use('/', require('./routes/smsru.routes'));
+//app.use('/service-nalog-ru', require('./routes/service.nalog.ru.routes'));
+app.use('/registration', require('./routes/registration.routes'));
+app.use('/', require('./routes/google.routes'));
+
+const { registrationLimiter } = require("./middleware/rateLimitRedis");
+//app.use("/courier/", courierLimiter);
+app.use("/registration/", registrationLimiter);
 
 app.get('/', (req, res) => {
   res.send('pong');
@@ -88,7 +97,7 @@ app.get('/', (req, res) => {
 
 
 app.all('*', function(req, res){
-  res.send('Error', 404);
+  res.status(404).send('My Error');
 });
 
 const PORT = process.env.PORT || 3000;
@@ -98,6 +107,7 @@ db.sequelize.sync().then(async (req) => {
     /*console.log(
         `Server is running localhost:${PORT} \nLogin AdminPanel is under localhost:${PORT}/admin`)*/
     console.log(`Server is running localhost:${PORT}`);
+    console.log(`localhost:${PORT}/google/get-url/715`);
     console.log(`Login AdminPanel is under localhost:${PORT}/admin/dashboard localhost:${PORT}/localhost:3000/admin/info`);
     console.log(`Log Out AdminPanel is under localhost:${PORT}/admin/logout`);
   });
